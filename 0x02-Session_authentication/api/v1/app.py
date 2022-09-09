@@ -51,10 +51,12 @@ def before():
     if not auth:
         return
     auth_test = auth.require_auth(request.path, [
-        '/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/'])
+        '/api/v1/status/', '/api/v1/unauthorized/',
+        '/api/v1/forbidden/', "/api/v1/auth_session/login/"])
     if not auth_test:
         return
-    if auth.authorization_header(request) is None:
+    if not auth.authorization_header(request)\
+        and not auth.session_cookie(request):
         abort(401)
     current_user = auth.current_user(request)
     request.current_user = current_user
@@ -65,4 +67,4 @@ def before():
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port, debug=True)
+    app.run(host=host, port=port)
