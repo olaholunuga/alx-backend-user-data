@@ -19,15 +19,19 @@ class Auth():
             return False
         if path + "/" in excluded_paths:
             return False
+        for excl in excluded_paths:
+            if excl.endswith("*"):
+                if path.startswith(excl[:-1]):
+                    return False
         return True
 
     def authorization_header(self, request=None) -> str:
         """ request: flask request object
         return: None
         """
-        auth_key = request.headers.get("Authorization")
         if request is None:
             return None
+        auth_key = request.headers.get("Authorization")
         if auth_key is None:
             return None
         return auth_key

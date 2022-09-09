@@ -32,11 +32,11 @@ class BasicAuth(Auth):
         if type(base64_authorization_header) is not str:
             return None
         try:
-            header_byte = b64decode(base64_authorization_header)
+            header_byte = b64decode(base64_authorization_header).decode("utf-8")
         except Exception:
             return None
         else:
-            return header_byte.decode("utf-8")
+            return header_byte
 
     def extract_user_credentials(
             self, decoded_base64_authorization_header: str) -> Tuple[str, str]:
@@ -67,8 +67,9 @@ class BasicAuth(Auth):
         #     return None
         for user in user_list:
             if user.is_valid_password(user_pwd):
-                return user
-        return None
+                user = user
+                break
+        return user
 
     def current_user(
             self, request=None) -> TypeVar('User'):
