@@ -66,12 +66,11 @@ class BasicAuth(Auth):
         # if not user:
         #     return None
         # if not user.is_valid_password(user_pwd):
-        #     return None
+        #     return 
         for useri in user_list:
             if useri.is_valid_password(user_pwd):
                 user = useri
                 return user
-                break
         return None
 
     def current_user(
