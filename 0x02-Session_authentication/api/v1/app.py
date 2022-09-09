@@ -56,7 +56,7 @@ def before():
     if not auth_test:
         return
     if not auth.authorization_header(request)\
-        and not auth.session_cookie(request):
+            and not auth.session_cookie(request):
         abort(401)
     current_user = auth.current_user(request)
     request.current_user = current_user
