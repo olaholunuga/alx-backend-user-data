@@ -3,9 +3,11 @@
 """
 from flask import Flask, jsonify, request
 from auth import Auth
+from os import urandom
 
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = urandom(16)
 AUTH = Auth()
 
 @app.route("/", methods=["GET"], strict_slashes=False)
