@@ -84,3 +84,5 @@ class Auth:
             return None
         except NoResultFound:
             return None 
+
+    def get_reset_password_token(self)
