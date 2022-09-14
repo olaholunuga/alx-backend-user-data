@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """app module
 """
-import email
 import re
-from flask import Flask, abort, jsonify, make_response, request, session
+from flask import Flask, abort, jsonify, make_response, redirect, request
 from auth import Auth
 from os import urandom
 
@@ -31,7 +30,7 @@ def creat_user():
         return jsonify({"message": "email already registered"}), 400
 
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
-def sessions():
+def login():
     """ session login method
     """
     password = request.form.get("password")
@@ -44,6 +43,29 @@ def sessions():
         return resp
     else:
         abort(401)
+
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
+def logout():
+    """session logout method
+    """
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        AUTH.destroy_session(user.id)
+        redirect("/")
+    else:
+        abort(403)
+
+@app.route("/profile", methods=["GET"], strict_slashes=False)
+def profile():
+    """ profile renderer
+    """
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        return jsonify({"email": f"{user.email}"}), 200
+    else:
+        abort(403)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
