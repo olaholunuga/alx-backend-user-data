@@ -13,10 +13,12 @@ def _hash_password(password: str = "") -> bytes:
     """
     return hashpw(password.encode("utf-8"), gensalt())
 
+
 def _generate_uuid() -> str:
     """ uuid generator function
     """
     return uuid4().__str__()
+
 
 class Auth:
     """Auth class to interact with the authentication database.
@@ -74,7 +76,7 @@ class Auth:
             return user
         except NoResultFound:
             return None
-    
+
     def destroy_session(self, user_id: str) -> None:
         """ destroy the session id of a given user_id
         """
@@ -83,7 +85,7 @@ class Auth:
             self._db.update_user(user.id, session_id=None)
             return None
         except NoResultFound:
-            return None 
+            return None
 
     def get_reset_password_token(self, email: str) -> str:
         """ get the reset password token to change password
