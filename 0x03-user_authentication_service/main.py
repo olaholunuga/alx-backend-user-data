@@ -12,12 +12,14 @@ def register_user(email: str, password: str) -> None:
     assert r.status_code == 200
     assert r.json() == {"email": f"{email}", "message": "user created"}
 
+
 def log_in_wrong_password(email: str, password: str) -> None:
     """user login with wrong details test
     """
     data = {"email": email, "password": password}
     r = requests.post("http://0.0.0.0:5000/sessions", data=data)
     assert r.status_code == 401
+
 
 def log_in(email: str, password: str) -> str:
     """ user login test
@@ -28,11 +30,13 @@ def log_in(email: str, password: str) -> str:
     assert r.json() == {"email": f"{email}", "message": "logged in"}
     return r.cookies.get("session_id")
 
+
 def profile_unlogged() -> None:
     """profile loging function
     """
     r = requests.get("http://0.0.0.0:5000/profile", cookies=None)
     assert r.status_code == 403
+
 
 def profile_logged(session_id: str) -> None:
     """profile login test
@@ -42,16 +46,21 @@ def profile_logged(session_id: str) -> None:
     assert r.status_code == 200
     assert "email" in (r.json()).keys()
 
+
 def log_out(session_id: str) -> None:
     """logout test
     """
     cookie = {"session_id": session_id}
-    r = requests.delete("http://0.0.0.0:5000/sessions", cookies=cookie, allow_redirects=True)
-    assert r.history[-1].is_redirect == True
+    r = requests.delete(
+            "http://0.0.0.0:5000/sessions",
+            cookies=cookie,
+            allow_redirects=True)
+    assert r.history[-1].is_redirect is True
     assert r.history[-1].status_code == 302
     assert r.url == "http://0.0.0.0:5000/"
     # assert r.is_redirect == True
     # assert r.status_code == 302
+
 
 def reset_password_token(email: str) -> str:
     """reset password test
@@ -61,13 +70,18 @@ def reset_password_token(email: str) -> str:
     assert r.status_code == 200
     return (r.json()).get("reset_token")
 
+
 def update_password(email: str, reset_token: str, new_password: str) -> None:
     """update password test
     """
-    data = {"email": email, "reset_token": reset_token, "new_password": new_password}
+    data = {
+            "email": email,
+            "reset_token": reset_token,
+            "new_password": new_password}
     r = requests.put("http://0.0.0.0:5000/reset_password", data=data)
     assert r.status_code == 200
     assert r.json() == {"email": f"{email}", "message": "Password updated"}
+
 
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
