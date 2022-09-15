@@ -49,10 +49,12 @@ def logout():
     """session logout method
     """
     session_id = request.cookies.get("session_id")
+    if not session_id:
+        abort(403)
     user = AUTH.get_user_from_session_id(session_id)
     if user:
         AUTH.destroy_session(user.id)
-        redirect("/")
+        return redirect("/")
     else:
         abort(403)
 
@@ -61,6 +63,8 @@ def profile():
     """ profile renderer
     """
     session_id = request.cookies.get("session_id")
+    if session_id is None:
+        abort(403)
     user = AUTH.get_user_from_session_id(session_id)
     if user:
         return jsonify({"email": f"{user.email}"}), 200
@@ -92,7 +96,7 @@ def update_password():
         AUTH.update_password(reset_token, new_password)
         return jsonify({
             "email": f"{email}",
-            "message": f"Password updated"
+            "message": "Password updated"
         }), 200
     except ValueError:
         return abort(403)
